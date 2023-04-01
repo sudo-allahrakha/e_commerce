@@ -1,46 +1,136 @@
 import { useState, useEffect } from "react"
 import Pagination from "./Pagination"
 import ProductCard from "./ProductCard"
-import ProductsFilter from "./ProductsFilter"
+import ProductPlaceHolder from "./ProductPlaceHolder"
+import get from "../api/api"
+
 const ProductsGrid = () => {
 
-    let [products, setProudcts] = useState([])
-    let [loading, setLoading] = useState(true)
-    const getProudcts = async () => {
-
-        let response = await fetch("https://fakestoreapi.com/products")
-        let tempProducts = await response.json()
-        console.log(tempProducts);
-        setLoading(false)
-        setProudcts(tempProducts)
-
-    }
-
-    useEffect(() => getProudcts, [])
-
-
+    let [products, setProducts] = useState([])
     let [categories, setCategories] = useState([])
-    let [categoriesLoading, setCategoriesLoading] = useState(true)
+    let [loading, setLoading] = useState(true)
 
-    let getCategories = async () => {
+    useEffect(() => {
+        (async () => {
+            let tempProducts = await get('products')
+            setProducts(tempProducts)
 
-        let response = await fetch('https://fakestoreapi.com/products/categories')
-        let tempCategories = await response.json()
-        setCategoriesLoading(false)
-        setCategories(tempCategories)
+            let tempCategories = await get('products/categories')
+            setCategories(tempCategories)
+
+            setLoading(false)
+        })()
+    }, [])
+
+    const categoryFilterHandler = async (category) => {
+        console.log(category)
+        setLoading(true)
+        let tempProducts = await get('products')
+        setLoading(false)
+        let filterItems = tempProducts.filter(product => product.category == category)
+        setProducts(filterItems)
 
     }
 
-    useEffect(() => getCategories, [])
-
-
-
-
-
-
+     // destory is not a function
+    // useEffect(async () => {
+    //     let response = await get('products')
+    //     setLoading(false)
+    //     setProducts(response)
+    // }, [])
 
     if (loading)
-        return <h1 className="text-center my-3">loading...</h1>
+        return (
+            <section>
+                <div className="container">
+                    <div className="row">
+                        <div className="col-lg-9">
+                            <header className="d-sm-flex align-items-center border-bottom mb-4 pb-3">
+                                <strong className="d-block py-2">0 Items found </strong>
+                                <div className="ms-auto">
+                                    <select className="form-select d-inline-block w-auto border pt-1">
+                                        <option value="0">Best match</option>
+                                        <option value="1">Recommended</option>
+                                        <option value="2">High rated</option>
+                                        <option value="3">Randomly</option>
+                                    </select>
+                                    <div className="btn-group shadow-0 border">
+                                        <a href="#" className="btn btn-light" title="List view">
+                                            <i className="fa fa-bars fa-lg"></i>
+                                        </a>
+                                        <a href="#" className="btn btn-light active" title="Grid view">
+                                            <i className="fa fa-th fa-lg"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </header>
+
+                            <div className="row">
+                                {
+                                    [...Array(20).keys()].map(() => <ProductPlaceHolder />)
+                                }
+
+
+                            </div>
+
+                            <hr />
+
+                        </div>
+
+
+
+
+                        <div className="col-lg-3">
+                            <button
+                                className="btn btn-outline-secondary mb-3 w-100 d-lg-none"
+                                type="button"
+                                data-mdb-toggle="collapse"
+                                data-mdb-target="#navbarSupportedContent"
+                                aria-controls="navbarSupportedContent"
+                                aria-expanded="false"
+                                aria-label="Toggle navigation"
+                            >
+                                <span>Show filter</span>
+                            </button>
+
+                            <div className="collapse card d-lg-block mb-5" id="navbarSupportedContent">
+                                <div className="accordion" id="accordionPanelsStayOpenExample">
+                                    <div className="accordion-item">
+                                        <h2 className="accordion-header" id="headingOne">
+                                            <button
+                                                className="accordion-button text-dark bg-light"
+                                                type="button"
+                                                data-mdb-toggle="collapse"
+                                                data-mdb-target="#panelsStayOpen-collapseOne"
+                                                aria-expanded="true"
+                                                aria-controls="panelsStayOpen-collapseOne"
+                                            >
+                                                Related items
+                                            </button>
+                                        </h2>
+                                        <div id="panelsStayOpen-collapseOne" className="accordion-collapse collapse show" aria-labelledby="headingOne">
+                                            <div className="accordion-body">
+                                                <ul className="list-unstyled">
+                                                    <p className="card-text placeholder-glow">
+                                                        <span className="placeholder col-7"></span>
+                                                        <span className="placeholder col-4"></span>
+                                                        <span className="placeholder col-4"></span>
+                                                        <span className="placeholder col-6"></span>
+                                                        <span className="placeholder col-8"></span>
+                                                    </p>
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        )
 
     return (
         <section>
@@ -69,7 +159,7 @@ const ProductsGrid = () => {
 
                         <div className="row">
                             {
-                                products.map(product => <ProductCard product={product} />)
+                                products.map((product) => <ProductCard product={product} />)
                             }
 
 
@@ -79,10 +169,10 @@ const ProductsGrid = () => {
                         <Pagination />
 
                     </div>
-                    
-                    
-                   
-                    
+
+
+
+
                     <div className="col-lg-3">
                         <button
                             className="btn btn-outline-secondary mb-3 w-100 d-lg-none"
@@ -115,7 +205,7 @@ const ProductsGrid = () => {
                                         <div className="accordion-body">
                                             <ul className="list-unstyled">
                                                 {
-                                                    categories.map(category => <><li><a href="#" className="text-dark">{category.toUpperCase()} </a></li></>)
+                                                    categories.map((category, index) => <li style={{ cursor: "pointer" }} className="text-dark text-capitalize " onClick={() => categoryFilterHandler(category)} key={index}>{category}</li>)
                                                 }
 
                                             </ul>

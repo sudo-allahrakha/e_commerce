@@ -5,15 +5,22 @@ const ProductCard = ({ product }) => {
         <div key={product.id} className="col-lg-4 col-md-6 col-sm-6 d-flex my-1">
             <div className="card shadow-2-strong w-100 my-2 ">
                 <img src={product.image} className="card-img-top mx-auto d-block" style={{ width: "150px", height: "150px" }} />
+                <span class="topbar">
+                    
+                </span>
                 <div className="card-body d-flex flex-column">
-                    <h5 className="card-title">$ {product.price}</h5>
+                    <h5 className="card-title">$ {product.price}
+                    
+                    <span class="badge bg-danger text-sm float-end text-capitalize"> {product.category} </span>
+                    </h5>
+                    
                     <p className="card-text"> {product.title}</p>
 
                     <div className="">
                         {
-                            <Rating rating={product.rating}/>
+                            <Rating rating={product.rating} />
                         }
-                       
+
                     </div>
                     <div className="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto">
                         <a href="#!" className="btn btn-primary shadow-0 me-1">Add to cart</a>
