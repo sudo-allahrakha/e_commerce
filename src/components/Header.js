@@ -7,7 +7,7 @@ const Header = () => {
                     <div className="row gy-3">
                         <div className="col-lg-2 col-sm-4 col-4">
                             <a href="#" target="_blank" className="float-start">
-                                <img src="fakeshop.png" height="35" />
+                                <img src="fakeshop.png" height="45" />
                             </a>
                         </div>
 
@@ -54,9 +54,9 @@ const Header = () => {
                     <nav className="d-flex mb-2">
                         <h6 className="mb-0">
                             <a href="" className="text-white-50">Home</a>
-                            <span className="text-white-50 mx-2">  </span>
+                            <span className="text-white-50 mx-2"> / </span>
                             <a href="" className="text-white-50">Library</a>
-                            <span className="text-white-50 mx-2">  </span>
+                            <span className="text-white-50 mx-2"> / </span>
                             <a href="" className="text-white"><u>Data</u></a>
                         </h6>
                     </nav>
